@@ -44,10 +44,17 @@ The employee can only see his attendance status and can keep track of it.
 
     python manage.py makemigrations
     python manage.py migrate
+    
 
 # Create a super user to login as a manager
 
     python manage.py createsuperuser
+
+# Generate dummy data
+
+    python manage.py shell
+    from kilimanjaro.models import *
+    Employee().generate_dummy_data()
 
 # Run the application
 
