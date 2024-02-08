@@ -1,10 +1,10 @@
 # About the project
 
-**This is an attendence management system. It has two login options, one for manager who will manage the attendence of all the employees and another one is for the employees where they can see their attendance status individually.**
+This is an attendence management system. It has two login options, one for manager who will manage the attendence of all the employees and another one is for the employees where they can see their attendance status individually.
 
-**The manager can add an employee, mark the attendance for a particular date, see the attendance status of each employee and can also update it.**
+The manager can add an employee, mark the attendance for a particular date, see the attendance status of each employee and can also update it.
 
-**The employee can only see his attendance status and can keep track of it.**
+The employee can only see his attendance status and can keep track of it.
 
 
 # STEPS TO RUN THE APPLICATION
@@ -40,6 +40,17 @@
 
     pip install django
 
+# Make migrations
+
+    python manage.py makemigrations
+    python manage.py migrate
+
+# Create dummy data
+
+    python manage.py shell
+    from kilimanjaro.models import *
+    Employee().generate_dummy_data()
+
 # Run the application
 
     python manage.py runserver
@@ -48,28 +59,7 @@
 
      http://127.0.0.1:8000/
 
-# Login as Manager
-
-**Username:**
-
-    yoda
-
-**Password:**
-
-    yoda@123
-
-# Login as Employee (This option is for different employees to log in to their profile to view their attendance status)
-
-`example`
-
-**Username:**
-
-    e9arawat
-
-**Password:**
-
-    akash@enine
-
-# You can also create a new super user with the following command and login with those credentials.
+# Create a super user to login as a manager
 
     python manage.py createsuperuser
+
