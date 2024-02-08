@@ -34,6 +34,36 @@ class Employee(models.Model):
     def __str__(self):
         """to return the display string"""
         return f"{self.role}-{self.user}"
+    
+    @classmethod
+    def generate_dummy_data(cls):
+        """function to generate dummy-data"""
+        usernames = ['e9arawat', 'e9akhan', 'e9gsrivastava', 'e9srawat', 'e9kwagh']
+        firstnames = ['Akash', 'Akbar', 'Gaurav', 'Shivansh', 'Kunal']
+        lastnames = ['Rawat', 'Khan', 'Srivastava', 'Rawat', 'Wagh']
+        emails = ['akash@gmail.com', 'akbar@gmail.com', 'gaurav@gmail.com', 'shivansh@gmail.com', 'kunal@gmail.com']
+        passwords = ['akash@enine', 'akbar@enine', 'gaurav@enine', 'shivansh@enine', 'kunal@enine']
+
+
+        profiles = []
+        for username, firstname, lastname, email, password in zip(usernames, firstnames, lastnames, emails, passwords):
+            profile = User(username=username, first_name=firstname, last_name=lastname, email=email, password=password)
+            profiles.append(profile)
+
+        User.objects.bulk_create(profiles)
+
+
+        users = User.objects.filter(is_staff=False)
+        start_date = date.today() - timedelta(days=3)
+        paid_leaves = 24
+
+        employees = []
+        for user in users:
+            employee = Employee(user=user, start_date=start_date, paid_leaves=paid_leaves)
+            employees.append(employee)
+
+        Employee.objects.bulk_create(employees)
+
 
     def employee_record(self):
         """to return the record of one employee"""
@@ -112,6 +142,24 @@ class Employee(models.Model):
                 }
             )
         return date_data
+    
+    @classmethod
+    def all_dates_record(cls):
+        """return the record of all the dates"""
+        current_date = cls.find_start_date()
+        dates_record = []
+        delta = timedelta(days=1)
+        if not cls.objects.all():
+            return []
+        try:
+            obj = cls.objects.all().first()
+        except ObjectDoesNotExist:
+            return dates_record
+        while current_date <= date.today():
+            dates_record.append(obj.date_record(current_date))
+            current_date += delta
+        return dates_record
+
 
 
 class Attendance(models.Model):
@@ -137,20 +185,3 @@ class Attendance(models.Model):
         return f"{self.user} - {self.date} - {self.status}"
 
     objects = models.Manager
-
-    @classmethod
-    def all_dates_record(cls):
-        """return the record of all the dates"""
-        current_date = Employee().find_start_date()
-        dates_record = []
-        delta = timedelta(days=1)
-        if not cls.objects.all():
-            return []
-        try:
-            obj = cls.objects.all().first()
-        except ObjectDoesNotExist:
-            return dates_record
-        while current_date <= date.today():
-            dates_record.append(obj.employee.date_record(current_date))
-            current_date += delta
-        return dates_record

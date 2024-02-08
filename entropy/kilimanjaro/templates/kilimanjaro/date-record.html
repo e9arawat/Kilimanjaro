@@ -3,8 +3,8 @@
 {% block content %}
 
     <div class="container mt-5 border border-dark p-3 bg-light ">
-        {% if error_message %}
-            <h1>{{ error_message }}</h1>
+        {% if date_record.error_message %}
+            <h1>{{ date_record.error_message }}</h1>
         {% else %}
 
             <button class="btn btn-info "><a class="text-dark" href="{% url 'update_attendance' selected_date=date_record.date %}">Edit</a></button>

@@ -142,7 +142,7 @@ class AttendanceSheetView(LoginRequiredMixin, PermissionRequiredMixin, ListView)
     """renders date-wise attendance view"""
 
     template_name = "kilimanjaro/attendance_sheet.html"
-    model = Attendance
+    model = Employee
     paginate_by = 7
     context_object_name = "attendance_data"
     login_url = "user-login"
@@ -170,7 +170,7 @@ class DateRecordView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     def get_queryset(self):
         searched_date = self.request.POST.get("searched_date")
         if not searched_date:
-            return Employee.objects.none()
+            return {'error_message' : "No Date Selected"}
 
         searched_date = datetime.strptime(searched_date, "%Y-%m-%d").date()
 
