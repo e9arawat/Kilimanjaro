@@ -1,0 +1,32 @@
+{% extends 'kilimanjaro/base.html' %}
+
+{% block content %}
+
+{% if request.user.is_staff %}
+
+    <div class="container mt-5">
+        <div class="jumbotron">
+            <h2 class="display-5">Welcome to Kilimanjaro Attendance Management</h2>
+            <p class="lead">Your solution for efficient and organized employee attendance tracking.</p>
+            <hr class="my-4">
+        </div>
+    </div>
+
+{% else %}
+
+    <div class="container mt-5 border border-dark p-3 bg-light">
+        <h2>Welcome, {{ user.username }}!</h2>
+        <p>Start Date: {{ company_record.start_date }}</p>
+        <p>Role: {{ company_record.role }}</p>
+        <p>Manager: {{ company_record.manager }}</p>
+        <p>Total Days: {{ attendance_record.total_days }}</p>
+        <p>Total Leaves: {{ attendance_record.total_leaves }} / {{company_record.paid_leaves}}</p>
+        <p>Total Official Travel: {{ attendance_record.total_official_travel }}</p>
+        <p>Total Absents: {{ attendance_record.total_absents }}</p>
+        <p>Total Lates: {{ attendance_record.total_lates }}</p>
+        <p>Attendance Percentage: {{ attendance_record.attendance_percentage }}%</p>
+    </div>
+
+{% endif %}
+
+{% endblock %}

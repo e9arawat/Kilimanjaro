@@ -1,0 +1,25 @@
+{% extends 'kilimanjaro/base.html' %}
+
+{% block content %}
+
+    <div class="container mt-5 border border-dark p-3 bg-light ">
+        {% if error_message %}
+            <h1>{{ error_message }}</h1>
+        {% else %}
+            <button class="btn btn-info "><a class="text-dark" href="{% url 'update_employee' pk=employee.id %}" tupe="submit">Edit</a></button>
+            </br>
+                <h2>{{ company_record.user.username }}!</h2>
+                
+                <p>Start Date: {{ company_record.start_date }}</p>
+                <p>Role: {{ company_record.role }}</p>
+                <p>Manager: {{ company_record.manager }}</p>
+                <p>Total Days: {{ attendance_record.total_days }}</p>
+                <p>Total Leaves: {{ attendance_record.total_leaves }} / {{company_record.paid_leaves}}</p>
+                <p>Total Official Travel: {{ attendance_record.total_official_travel }}</p>
+                <p>Total Absents: {{ attendance_record.total_absents }}</p>
+                <p>Total Lates: {{ attendance_record.total_lates }}</p>
+                <p>Attendance Percentage: {{ attendance_record.attendance_percentage }}%</p>
+            </div>
+        {% endif %}
+
+{% endblock %}

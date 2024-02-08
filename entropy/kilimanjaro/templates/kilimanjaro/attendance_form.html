@@ -1,0 +1,63 @@
+{% extends 'kilimanjaro/base.html' %}
+
+{% block content %}
+    
+    {% if form.errors %}
+        <div class="alert alert-danger mt-3">
+            {% for field, errors in form.errors.items %}
+                <strong>{{ field|title }}:</strong> {{ errors.0 }}<br>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    
+    <div class="container mt-5 border border-dark p-3 bg-light">
+        <form action="{% url 'attendance_form' %}" method="post">
+            {% csrf_token %}
+
+            {% if error_message %}
+            <div class="alert alert-danger" role="alert">
+                {{ error_message }}
+            </div>
+            {% endif %}
+            <div class="form-group">
+                <label for="date">Select Date</label>
+                <input type="date" class="form-control" name="date" id="date">
+            </div>
+
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">First Name</th>
+                        <th scope="col">Last Name</th>
+                        <th scope="col">Attendance Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for data in employee_data %}
+                    <tr>
+                        <th scope="row">{{ data.id }}</th>
+                        <td>{{ data.username }}</td>
+                        <td>{{ data.first_name }}</td>
+                        <td>{{ data.last_name }}</td>
+                        <td>
+                            <select id="attendance_status_{{ data.id }}" name="attendance_status_{{ data.id }}" class="form-control" required>
+                                <option value="Present">Present</option>
+                                <option value="Late">Late</option>
+                                <option value="Absent">Absent</option>
+                                <option value="Leave">Leave</option>
+                                <option value="Official Travel">Official Travel</option>
+                            </select>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <button type="submit" class="btn btn-primary">Submit Attendance</button>
+        </form>
+    </div>
+    
+{% endblock %}

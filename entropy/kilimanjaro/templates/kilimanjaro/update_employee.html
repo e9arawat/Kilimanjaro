@@ -1,0 +1,18 @@
+{% extends 'kilimanjaro/base.html' %}
+
+{% block content %}
+
+
+    <div class="container mt-5 border border-dark p-3 bg-light">
+    <h2>Update Information</h2>
+    <div class="container mt-5 border border-dark p-3 bg-light ">
+        <form method="post" class="form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+    </div>
+
+    </div>
+
+{% endblock %}

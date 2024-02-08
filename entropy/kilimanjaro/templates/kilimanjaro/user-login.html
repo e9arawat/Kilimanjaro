@@ -1,0 +1,45 @@
+{% extends 'kilimanjaro/base.html' %}
+{% block content %}
+    
+        <div>
+            {% if form.errors %}
+            <div class="alert alert-danger" role="alert">
+                Invalid Credentials
+            </div>
+            {% endif %}
+
+        
+            <div class="col-md-6 col-lg-7 d-flex align-items-center">
+                <div class="card-body p-4 p-lg-5 text-black">
+
+                    <form method="post" action="/user-login/">
+                        {% csrf_token %}
+                    
+
+                        <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Sign in to your account</h5>
+                        {% for field in form %}
+                            <div class="form-outline mb-4">
+                                <label for="">{{ field.label }}</label>
+                                <input type="{{ field.field.widget.input_type }}" class="form-control" id="{{ field.name }}" name="{{ field.name }}" placeholder="Enter Username">
+                            </div>
+                        {% endfor %}
+
+                        <div class="pt-1 mb-4">
+                        <button class="btn btn-dark" type="submit">Login</button>  
+                        </div>
+
+                        
+                    </form>
+                    
+                    Don't have an account? <a class="text-primary" href="../add_employee">Signup</a>
+                        
+                </div>
+            </div>
+            
+        </div>
+
+        
+{% endblock %}
+
+
+    

@@ -1,0 +1,45 @@
+{% extends 'kilimanjaro/base.html' %}
+
+{% block content %}
+
+
+
+    <div class="container mt-5 border border-dark p-3 bg-light">
+    <h2>Update Attendance for {{ date }}</h2>
+
+    <form action="{% url 'update_attendance' date %}" method="post">
+        {% csrf_token %}
+
+        
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Attendance Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for attendance in attendances %}
+                    <tr>
+                        <td>{{ attendance.username }}</td>
+                        <td>
+                            <select name="attendance_status_{{ attendance.username }}" class="form-control">
+                                <option value="Present" {% if attendance.status == 'Present' %}selected{% endif %}>Present</option>
+                                <option value="Late" {% if attendance.status == 'Late' %}selected{% endif %}>Late</option>
+                                <option value="Absent" {% if attendance.status == 'Absent' %}selected{% endif %}>Absent</option>
+                                <option value="Leave" {% if attendance.status == 'Leave' %}selected{% endif %}>Leave</option>
+                                <option value="Official Travel" {% if attendance.status == 'Official Travel' %}selected{% endif %}>Official Travel</option>
+                                <option value="Present" {% if attendance.status == 'N/A' %}selected{% endif %}>N/A</option>
+                            </select>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <input type="submit" class="btn btn-primary" value="Update Attendance">
+    </form>
+    </div>
+
+
+{% endblock %}

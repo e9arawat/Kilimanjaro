@@ -1,0 +1,70 @@
+{% extends 'kilimanjaro/base.html' %}
+
+{% block content %}
+    
+    <div class="container mt-5 border border-dark p-3 bg-light">
+        <h2>Attendance Record</h2>
+    
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th class="text-center">ID</th>
+                    <th class="text-center">Username</th>
+                    <th class="text-center">First Name</th>
+                    <th class="text-center">Last Name</th>
+                    <th class="text-center">Email</th>
+                    <th class="text-center">Total Days</th>
+                    <th class="text-center">Leaves</th>
+                    <th class="text-center">Official Travels</th>
+                    <th class="text-center">Absents</th>
+                    <th class="text-center">Attendance Percentage</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for employee in attendance_record %}
+                <tr>
+                    {% for user, record in employee.items %}
+                        <td class="text-right">{{ user.id }}</td>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.first_name }}</td>
+                        <td>{{ user.last_name }}</td>
+                        <td>{{ user.email }}</td>
+                        <td class="text-right">{{ record.total_days }}</td>
+                        <td class="text-right">{{ record.total_leaves }}</td>
+                        <td class="text-right">{{ record.total_official_travel }}</td>
+                        <td class="text-right">{{ record.total_absents }}</td>
+                        {% if record.attendance_percentage < 75 %}
+                        <td class="bg-danger text-right">{{ record.attendance_percentage }}%</td>
+                        {% elif record.attendance_percentage < 90  %}
+                        <td class="bg-warning text-right">{{ record.attendance_percentage }}%</td>
+                        {% else %}
+                        <td class="bg-success text-right">{{ record.attendance_percentage }}%</td>
+                        {% endif %}
+                    
+                    {% endfor %}  
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</br>
+    <div class="pagination mx-auto" style="width: 300px;">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+    </div>
+
+{% endblock %}

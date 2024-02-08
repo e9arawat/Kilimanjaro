@@ -1,0 +1,33 @@
+{% extends 'kilimanjaro/base.html' %}
+
+{% block content %}
+
+    {% if form.errors %}
+    <div class="alert alert-danger mt-3">
+        {% for field, errors in form.errors.items %}
+            <strong>{{ field|title }}:</strong> {{ errors.0 }}<br>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    
+    <div class="container mt-5">
+        <h3>Create an account</h3>
+        <div class=" border border-dark p-3  bg-light">
+        <form action="{% url 'add_employee' %}" method="post">
+            {% csrf_token %}
+            
+            {% for field in form %}
+            <div class="form-group">
+                <label for="id_{{ field.name }}">{{field.label}}</label>
+                <input type="{{field.field.widget.input_type}}" class="form-control" name="{{ field.name }}" id="{{ field.name }}" placeholder="{{ field.name }}">
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">Sign-up</button>
+        </form>
+        </br>  
+        Already have an account? <a class="text-primary" href="{% url 'user-login' %}">Login</a>
+        </div>
+    </div>
+
+{% endblock %}

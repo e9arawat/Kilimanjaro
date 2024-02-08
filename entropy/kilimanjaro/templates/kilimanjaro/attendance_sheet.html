@@ -1,0 +1,84 @@
+{% extends 'kilimanjaro/base.html' %}
+
+{% block content %}
+
+    
+    <div class="container p-3">
+      <div class="row">
+        <div class="col-sm-3">
+          <form method="post" action="{% url 'date-record' %}" class="d-flex">
+            {% csrf_token %}
+            <div class="form-group mr-2">
+                <input type="date" class="form-control" name="searched_date" id="searched_date">
+            </div>
+            <button class="btn btn-outline-info" type="submit">Search</button>
+          </form>
+        </div>
+      </div>
+      
+    </div>
+
+      <div class="container border border-dark p-3 bg-light">
+        
+        <h2>Attendance Sheet</h2>
+        
+    
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th class="text-center">Username</th>
+                    {% for date in attendance_data %}
+                      <th  class="text-center">{{ date.date }}</th>
+                    {% endfor %}
+                    
+                </tr>
+            </thead>
+            <tbody>
+              
+              {% for employee in employee_data %}
+                <tr>
+                    <td> {{ employee.username }} </td>
+                    
+                      {% for date in attendance_data %}
+                        {% for status in date.username_status %}
+
+                          {% if status.username == employee.username %}
+                            {% if status.status == 'Late' %}
+                              <td class="bg-warning"> {{ status.status }} </td>
+                            {% elif status.status == 'Absent' %}
+                              <td class="bg-danger"> {{ status.status }} </td>
+                            {% elif status.status == 'N/A' %}
+                              <td class="bg-secondary"> {{ status.status }} </td>
+                            {% else %}
+                              <td class="bg-success"> {{ status.status }} </td>
+                            {% endif %}
+                          {% endif %}
+
+                      {% endfor %}         
+                      {% endfor %}
+                      
+                </tr> 
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+  </br>
+  <div class="pagination mx-auto" style="width: 300px;">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+  </div>
+
+{% endblock %}

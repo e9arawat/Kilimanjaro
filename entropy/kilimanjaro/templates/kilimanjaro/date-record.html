@@ -1,0 +1,41 @@
+{% extends 'kilimanjaro/base.html' %}
+
+{% block content %}
+
+    <div class="container mt-5 border border-dark p-3 bg-light ">
+        {% if error_message %}
+            <h1>{{ error_message }}</h1>
+        {% else %}
+
+            <button class="btn btn-info "><a class="text-dark" href="{% url 'update_attendance' selected_date=date_record.date %}">Edit</a></button>
+            </br>
+                <h2 class="text-secondary">Attendance Record : {{ date_record.date }}</h2>
+                
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Username</th>
+                            <th class="text-center">Attendance Status</ths>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in date_record.username_status %}
+                        <tr>
+                            <td>{{item.username}}</td>
+                            {% if item.status == 'Absent' %}
+                                <td class="bg-danger">{{item.status}}</td>
+                            {% elif item.status == 'Late' %}
+                                <td class="bg-warning">{{item.status}}</td>
+                            {% elif item.status == 'N/A' %}
+                                <td class="bg-secondary">{{item.status}}</td>
+                            {% else %}
+                                <td class="bg-success">{{item.status}}</td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+
+{% endblock %}
