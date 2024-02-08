@@ -170,7 +170,7 @@ class DateRecordView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     def get_queryset(self):
         searched_date = self.request.POST.get("searched_date")
         if not searched_date:
-            return {'error_message' : "No Date Selected"}
+            return {"error_message": "No Date Selected"}
 
         searched_date = datetime.strptime(searched_date, "%Y-%m-%d").date()
 
