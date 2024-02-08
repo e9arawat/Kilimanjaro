@@ -86,6 +86,8 @@ class Employee(models.Model):
     def find_start_date(cls):
         """function to find the minimum date"""
         all_dates_object = cls.objects.all().values("start_date")
+        if not all_dates_object:
+            return
         all_dates = [x["start_date"] for x in all_dates_object]
         return min(all_dates)
 

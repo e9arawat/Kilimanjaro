@@ -30,7 +30,7 @@ The employee can only see his attendance status and can keep track of it.
 
 # Go inside the project folder
 
-    cd Kilimanjaro/ENTROPY
+    cd Kilimanjaro/entropy
 
 # Install the necessary modules
 
