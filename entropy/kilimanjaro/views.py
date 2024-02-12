@@ -171,6 +171,8 @@ class DateRecordView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         searched_date = self.request.POST.get("searched_date")
         if not searched_date:
             return {"error_message": "No Date Selected"}
+        if searched_date > str(date.today()):
+            return {"error_message": "Invalid Date"}
 
         searched_date = datetime.strptime(searched_date, "%Y-%m-%d").date()
 
@@ -224,7 +226,6 @@ class UpdateAttendanceView(LoginRequiredMixin, PermissionRequiredMixin, FormView
                     attendance_record = Attendance.objects.get_or_create(
                         date=selected_date,
                         user=user,
-                        status=new_status,
                         employee=employee,
                     )[0]
                     attendance_record.status = new_status

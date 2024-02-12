@@ -8,10 +8,10 @@
         <div class="col-sm-3">
           <form method="post" action="{% url 'date-record' %}" class="d-flex">
             {% csrf_token %}
-            <div class="form-group mr-2">
+            <div class="form-group mr-2 d-flex align-items-center">
                 <input type="date" class="form-control" name="searched_date" id="searched_date">
+                <button class="btn btn-outline-info ml-2 btn-sm" type="submit">Search</button>
             </div>
-            <button class="btn btn-outline-info" type="submit">Search</button>
           </form>
         </div>
       </div>
