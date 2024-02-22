@@ -16,15 +16,47 @@
 
     <div class="container mt-5 border border-dark p-3 bg-light">
         <h2>Welcome, {{ user.username }}!</h2>
-        <p>Start Date: {{ company_record.start_date }}</p>
-        <p>Role: {{ company_record.role }}</p>
-        <p>Manager: {{ company_record.manager }}</p>
-        <p>Total Days: {{ attendance_record.total_days }}</p>
-        <p>Total Leaves: {{ attendance_record.total_leaves }} / {{company_record.paid_leaves}}</p>
-        <p>Total Official Travel: {{ attendance_record.total_official_travel }}</p>
-        <p>Total Absents: {{ attendance_record.total_absents }}</p>
-        <p>Total Lates: {{ attendance_record.total_lates }}</p>
-        <p>Attendance Percentage: {{ attendance_record.attendance_percentage }}%</p>
+
+        <table class="table">
+            <tbody>
+                <tr>
+                    <td><strong>Start Date:</strong></td>
+                    <td>{{ company_record.start_date }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Role:</strong></td>
+                    <td>{{ company_record.role }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Manager:</strong></td>
+                    <td>{{ company_record.manager }}</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>Total Days:</td>
+                    <td>{{ attendance_record.total_days }}</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>Total Leaves:</td>
+                    <td>{{ attendance_record.total_leaves }} / {{company_record.paid_leaves}}</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>Total Official Travel:</strong></td>
+                    <td>{{ attendance_record.total_official_travel }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Total Absents:</strong></td>
+                    <td>{{ attendance_record.total_absents }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Total Lates:</strong></td>
+                    <td>{{ attendance_record.total_lates }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Attendance Percentage:</strong></td>
+                    <td>{{ attendance_record.attendance_percentage }}%</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
 {% endif %}
