@@ -37,39 +37,34 @@ class Employee(models.Model):
 
     @classmethod
     def generate_dummy_data(cls):
-        """function to generate dummy-data"""
-        usernames = ["e9arawat", "e9akhan", "e9gsrivastava", "e9srawat", "e9kwagh"]
-        firstnames = ["Akash", "Akbar", "Gaurav", "Shivansh", "Kunal"]
-        lastnames = ["Rawat", "Khan", "Srivastava", "Rawat", "Wagh"]
-        emails = [
-            "akash@gmail.com",
-            "akbar@gmail.com",
-            "gaurav@gmail.com",
-            "shivansh@gmail.com",
-            "kunal@gmail.com",
-        ]
-        passwords = [
-            "akash@enine",
-            "akbar@enine",
-            "gaurav@enine",
-            "shivansh@enine",
-            "kunal@enine",
-        ]
+        """
+        function to generate dummy-data
+        """
+        usernames = []
+        firstnames = []
+        lastnames = []
+        emails = []
+
+        for i in range(1, 101):
+            usernames.append("user"+str(i))
+            firstnames.append("first"+str(i))
+            lastnames.append("last"+str(i))
+            emails.append("user"+str(i)+"@enine.school")
+
 
         profiles = []
-        for username, firstname, lastname, email, password in zip(
-            usernames, firstnames, lastnames, emails, passwords
+        for username, firstname, lastname, email in zip(
+            usernames, firstnames, lastnames, emails
         ):
             profile = User(
-                username=username, first_name=firstname, last_name=lastname, email=email
+                username=username, first_name=firstname, last_name=lastname, email=email, password=username+"pass"
             )
-            profile.set_password(password)
             profiles.append(profile)
 
         User.objects.bulk_create(profiles)
 
         users = User.objects.filter(is_staff=False)
-        start_date = date.today() - timedelta(days=3)
+        start_date = date.today() - timedelta(days=21)
         paid_leaves = 24
 
         employees = []

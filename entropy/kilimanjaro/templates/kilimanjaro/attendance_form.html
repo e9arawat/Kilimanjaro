@@ -11,7 +11,7 @@
     {% endif %}
 
     
-    <div class="container mt-5 border border-dark p-3 bg-light">
+    <div class="container mt-5 border border-dark p-3">
         <form action="{% url 'attendance_form' %}" method="post">
             {% csrf_token %}
 
@@ -20,28 +20,33 @@
                 {{ error_message }}
             </div>
             {% endif %}
-            <div class="form-group">
-                <label for="date">Select Date</label>
-                <input type="date" class="form-control" name="date" id="date">
+            <div class="form-group p-2">
+                <div class="d-flex">
+                    <div class="py-2">
+                        <label for="date">Select Date</label>
+                    </div>
+                    <span>&nbsp;</span>
+                    <div>
+                        <input type="date" class="form-control" name="date" id="date">
+                    </div>
+                </div>
             </div>
 
             <table class="table table-bordered">
                 <thead>
                     <tr>
                         <th class="text-center" scope="col">ID</th>
-                        <th class="text-center" scope="col">Username</th>
-                        <th class="text-center" scope="col">First Name</th>
-                        <th class="text-center" scope="col">Last Name</th>
+                        <th class="text-center custom-view" scope="col">Username</th>
+                        <th class="text-center" scope="col">Name</th>
                         <th class="text-center" scope="col">Attendance Status</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for data in employee_data %}
                     <tr>
-                        <th scope="row">{{ data.id }}</th>
-                        <td>{{ data.username }}</td>
-                        <td>{{ data.first_name }}</td>
-                        <td>{{ data.last_name }}</td>
+                        <th class="text-end" scope="row">{{ data.id }}</th>
+                        <td class="custom-view">{{ data.username }}</td>
+                        <td>{{ data.get_full_name }}</td>
                         <td>
                             <select id="attendance_status_{{ data.id }}" name="attendance_status_{{ data.id }}" class="form-control" required>
                                 <option value="Present">Present</option>

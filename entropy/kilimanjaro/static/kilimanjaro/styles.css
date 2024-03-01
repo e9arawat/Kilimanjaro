@@ -1,0 +1,39 @@
+body { 
+    background-image: url(images/background-img.jpg);
+}
+
+a {
+    text-decoration: none;
+}
+
+.custom-border {
+    border: 1px solid;
+    border-radius: 2%;
+}
+
+.custom-padding {
+    padding: 20px;
+}
+
+.custom-record {
+    border: 1px black;
+}
+
+
+
+@media screen and (max-width:600px) {
+    .custom-view {
+        display: none;
+    }
+    .custom-font {
+        font-size: 0.6rem;
+    }
+    .custom-border {
+        border: none;
+    }
+    .custom-padding {
+        padding: none;
+    }
+}
+
+

@@ -40,21 +40,26 @@ class UserLogin(LoginView):
         return reverse_lazy("dashboard")
 
 
-class Dashboard(TemplateView):
+class Dashboard(ListView):
     """renders user dashboard"""
 
     template_name = "kilimanjaro/dashboard.html"
     model = Employee
-    context_object_name = "record"
+    context_object_name = "attendance_record"
+    paginate_by = 10
+
+    def get_queryset(self):
+        return self.model.attendance_record()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
         if not user.is_staff:
             employee = user.employee_related
-            context["attendance_record"] = employee.employee_record()
+            context["employee_attendance_record"] = employee.employee_record()
             context["company_record"] = employee.employee_info()
         return context
+    
 
 
 @login_required
@@ -143,7 +148,7 @@ class AttendanceSheetView(LoginRequiredMixin, PermissionRequiredMixin, ListView)
 
     template_name = "kilimanjaro/attendance_sheet.html"
     model = Employee
-    paginate_by = 7
+    paginate_by = 6
     context_object_name = "attendance_data"
     login_url = "user-login"
     permission_required = "is_staff"

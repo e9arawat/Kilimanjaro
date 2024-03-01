@@ -10,6 +10,7 @@
             {% csrf_token %}
             <div class="form-group mr-2 d-flex align-items-center">
                 <input type="date" class="form-control" name="searched_date" id="searched_date">
+                <span>&nbsp;</span>
                 <button class="btn btn-outline-info ml-2 btn-sm" type="submit">Search</button>
             </div>
           </form>
@@ -18,7 +19,7 @@
       
     </div>
 
-      <div class="container border border-dark p-3 bg-light">
+      <div class="container p-3 custom-font custom-record">
         
         <h2>Attendance Sheet</h2>
         
@@ -62,8 +63,7 @@
             </tbody>
         </table>
     </div>
-  </br>
-  <div class="pagination mx-auto" style="width: 300px;">
+  <div class="pagination mx-auto py-5" style="width: 300px;">
     <span class="step-links">
         {% if page_obj.has_previous %}
             <a href="?page=1">&laquo; first</a>
