@@ -46,18 +46,21 @@ class Employee(models.Model):
         emails = []
 
         for i in range(1, 101):
-            usernames.append("user"+str(i))
-            firstnames.append("first"+str(i))
-            lastnames.append("last"+str(i))
-            emails.append("user"+str(i)+"@enine.school")
-
+            usernames.append("user" + str(i))
+            firstnames.append("first" + str(i))
+            lastnames.append("last" + str(i))
+            emails.append("user" + str(i) + "@enine.school")
 
         profiles = []
         for username, firstname, lastname, email in zip(
             usernames, firstnames, lastnames, emails
         ):
             profile = User(
-                username=username, first_name=firstname, last_name=lastname, email=email, password=username+"pass"
+                username=username,
+                first_name=firstname,
+                last_name=lastname,
+                email=email,
+                password=username + "pass",
             )
             profiles.append(profile)
 

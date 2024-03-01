@@ -59,7 +59,6 @@ class Dashboard(ListView):
             context["employee_attendance_record"] = employee.employee_record()
             context["company_record"] = employee.employee_info()
         return context
-    
 
 
 @login_required
