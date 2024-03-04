@@ -3,7 +3,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Employee
+from .models import Employee, Attendance
 
 
 class AddEmployeeForm(UserCreationForm):
@@ -16,17 +16,28 @@ class AddEmployeeForm(UserCreationForm):
         fields = ["username", "first_name", "last_name", "email"]
 
 
-class AttendanceForm(forms.Form):
+class AttendanceForm(forms.ModelForm):
     """form for adding attendance"""
 
-    date = forms.DateField()
     attendance_status_choices = [
         ("Present", "Present"),
         ("Late", "Late"),
         ("Absent", "Absent"),
-        ("Leave", "Leave"),
-        ("Official Travel", "Official Travel"),
+        ("Sick", "Sick"),
+        ("Vacation", "Vacation"),
+        ("Travel", "Travel"),
     ]
+
+    class Meta:
+        """ 
+        Meta class
+        """
+        model = Attendance
+        fields = ["date"]
+
+        widgets = {
+            "date" : forms.DateInput(attrs={"class" : "form-control", "type" : "date"})
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -34,7 +45,7 @@ class AttendanceForm(forms.Form):
 
         for employee in employee_data:
             field_name = f"attendance_status_{employee.id}"
-            label = f"{employee.username} - {employee.get_full_name()}"
+            label = f"{employee.get_full_name()}"
             widget = forms.Select(
                 attrs={"class": "form-control"}, choices=self.attendance_status_choices
             )
@@ -54,8 +65,9 @@ class AttendanceUpdateForm(forms.Form):
             ("Present", "Present"),
             ("Late", "Late"),
             ("Absent", "Absent"),
-            ("Leave", "Leave"),
-            ("Official Travel", "Official Travel"),
+            ("Sick", "Sick"),
+            ("Vacation", "Vacation"),
+            ("Travel", "Travel"),
         ]
     )
 

@@ -2,6 +2,7 @@
 
 from datetime import date
 from datetime import datetime
+from django.db.models.query import QuerySet
 from django.shortcuts import redirect
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
@@ -10,7 +11,7 @@ from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
-from django.views.generic.edit import FormView, UpdateView
+from django.views.generic.edit import CreateView, UpdateView, FormView
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
@@ -21,6 +22,9 @@ from .forms import (
     AttendanceUpdateForm,
 )
 from .models import Attendance, Employee
+
+from django.core.paginator import Paginator
+from django.contrib import messages
 
 
 # Create your views here.
@@ -49,11 +53,26 @@ class Dashboard(ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        return self.model.attendance_record()
+        # contact_list = Employee.objects.all()
+        # paginator = Paginator(contact_list, 10)
+        # print(self.request.GET)
+        # page = int(self.request.GET.get('page',1))
+        # print(page)
+        # if self.request.user.is_staff:
+        #     temp = self.model.attendance_record(page)
+        #     print("*****************8")
+        #     print(temp)
+        #     return temp
+        # return []
+        return self.model.objects.all()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
+
+        data = self.model.attendance_record(context["object_list"])
+        context["attendance_record"] = data
+
         if not user.is_staff:
             employee = user.employee_related
             context["employee_attendance_record"] = employee.employee_record()
@@ -88,6 +107,7 @@ class AddEmployee(FormView):
         return redirect(self.success_url)
 
 
+
 class EmployeeAttendance(LoginRequiredMixin, PermissionRequiredMixin, FormView):
     """renders attendance form"""
 
@@ -98,6 +118,7 @@ class EmployeeAttendance(LoginRequiredMixin, PermissionRequiredMixin, FormView):
     error_message = ""
 
     permission_required = "is_staff"
+
 
     def form_valid(self, form):
         selected_date = form.cleaned_data["date"]
@@ -123,43 +144,32 @@ class EmployeeAttendance(LoginRequiredMixin, PermissionRequiredMixin, FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["employee_data"] = User.objects.filter(is_staff=False)
+        context['employee_data'] = User.objects.filter(is_staff=False)
         context["error_message"] = getattr(self, "error_message", None)
         return context
 
 
-class AttendanceRecordView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
-    """renders record view"""
 
-    template_name = "kilimanjaro/attendance_record.html"
-    model = Employee
-    context_object_name = "attendance_record"
-    paginate_by = 10
-    permission_required = "is_staff"
-    login_url = "user-login"
+# class AttendanceSheetView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+#     """renders date-wise attendance view"""
 
-    def get_queryset(self):
-        return self.model.attendance_record()
+#     template_name = "kilimanjaro/attendance_sheet.html"
+#     model = Employee
+#     paginate_by = 6
+#     context_object_name = "attendance_data"
+#     login_url = "user-login"
+#     permission_required = "is_staff"
 
+#     def get_queryset(self):
+#         return []
 
-class AttendanceSheetView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
-    """renders date-wise attendance view"""
-
-    template_name = "kilimanjaro/attendance_sheet.html"
-    model = Employee
-    paginate_by = 6
-    context_object_name = "attendance_data"
-    login_url = "user-login"
-    permission_required = "is_staff"
-
-    def get_queryset(self):
-        return self.model.all_dates_record()
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        employee_data = User.objects.filter(is_staff=False)
-        context["employee_data"] = employee_data
-        return context
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         # data = self.model.all_dates_record()
+#         # context['attendance_data'] = data
+#         # employee_data = User.objects.filter(is_staff=False)
+#         # context["employee_data"] = employee_data
+#         return context
 
 
 class DateRecordView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
@@ -170,8 +180,17 @@ class DateRecordView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     template_name = "kilimanjaro/date-record.html"
     context_object_name = "date_record"
     model = Employee
+    paginate_by = 10
 
     def get_queryset(self):
+        return self.model.objects.all()
+
+    def post(self, request, *args, **kwargs):
+        """function to search attendance record of any date"""
+        return self.get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         searched_date = self.request.POST.get("searched_date")
         if not searched_date:
             return {"error_message": "No Date Selected"}
@@ -179,13 +198,8 @@ class DateRecordView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
             return {"error_message": "Invalid Date"}
 
         searched_date = datetime.strptime(searched_date, "%Y-%m-%d").date()
-
-        return self.model.date_record(searched_date)
-
-    def post(self, request, *args, **kwargs):
-        """function to search attendance record of any date"""
-        return self.get(request, *args, **kwargs)
-
+        context["date_record"] = self.model.date_record(searched_date, context["object_list"])
+        return context
 
 class UpdateAttendanceView(LoginRequiredMixin, PermissionRequiredMixin, FormView):
     """renders form for updating attendance"""
@@ -203,7 +217,8 @@ class UpdateAttendanceView(LoginRequiredMixin, PermissionRequiredMixin, FormView
         context = super().get_context_data(**kwargs)
         selected_date = self.kwargs.get("selected_date")
         selected_date = datetime.strptime(selected_date, "%Y-%m-%d").date()
-        attendance_data = Employee.date_record(selected_date)
+        employees = Employee.objects.all()
+        attendance_data = Employee.date_record(selected_date, employees)
         context["date"] = attendance_data["date"]
         context["attendances"] = attendance_data["username_status"]
         return context
@@ -235,7 +250,7 @@ class UpdateAttendanceView(LoginRequiredMixin, PermissionRequiredMixin, FormView
                     attendance_record.status = new_status
                     attendance_record.save()
 
-        return redirect(reverse("attendance_sheet"))
+        return redirect(reverse("dashboard"))
 
 
 class SearchEmployee(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):

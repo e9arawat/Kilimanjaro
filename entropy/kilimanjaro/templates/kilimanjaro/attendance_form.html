@@ -20,6 +20,7 @@
                 {{ error_message }}
             </div>
             {% endif %}
+            
             <div class="form-group p-2">
                 <div class="d-flex">
                     <div class="py-2">
@@ -27,42 +28,39 @@
                     </div>
                     <span>&nbsp;</span>
                     <div>
-                        <input type="date" class="form-control" name="date" id="date">
+                        <input type="date" class="form-control" name="date" id="id_date">
                     </div>
                 </div>
             </div>
+            <div class="p-2">
+                <div class="border border-dark rounded-3">
 
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th class="text-center" scope="col">ID</th>
-                        <th class="text-center custom-view" scope="col">Username</th>
-                        <th class="text-center" scope="col">Name</th>
-                        <th class="text-center" scope="col">Attendance Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for data in employee_data %}
-                    <tr>
-                        <th class="text-end" scope="row">{{ data.id }}</th>
-                        <td class="custom-view">{{ data.username }}</td>
-                        <td>{{ data.get_full_name }}</td>
-                        <td>
-                            <select id="attendance_status_{{ data.id }}" name="attendance_status_{{ data.id }}" class="form-control" required>
-                                <option value="Present">Present</option>
-                                <option value="Late">Late</option>
-                                <option value="Absent">Absent</option>
-                                <option value="Leave">Leave</option>
-                                <option value="Official Travel">Official Travel</option>
-                            </select>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    <table class="table table-bordered rounded-3"> 
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for field in form %}
+                                {% if field.label != "Date" %}
+                                    <tr>
+                                        <td>{{field.label}}</td>
+                                        <td>{{field}}</td>
+                                    </tr>
+                                {% endif %}
+                                
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
             <button type="submit" class="btn btn-primary">Submit Attendance</button>
         </form>
     </div>
     
 {% endblock %}
+
+

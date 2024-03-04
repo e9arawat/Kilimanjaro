@@ -10,16 +10,16 @@ urlpatterns = [
     path(
         "attendance_form/", views.EmployeeAttendance.as_view(), name="attendance_form"
     ),
-    path(
-        "attendance_record/",
-        views.AttendanceRecordView.as_view(),
-        name="attendance_record",
-    ),
-    path(
-        "attendance_sheet/",
-        views.AttendanceSheetView.as_view(),
-        name="attendance_sheet",
-    ),
+    # path(
+    #     "attendance_record/",
+    #     views.AttendanceRecordView.as_view(),
+    #     name="attendance_record",
+    # ),
+    # path(
+    #     "attendance_sheet/",
+    #     views.AttendanceSheetView.as_view(),
+    #     name="attendance_sheet",
+    # ),
     path(
         "update_attendance/<str:selected_date>/",
         views.UpdateAttendanceView.as_view(),

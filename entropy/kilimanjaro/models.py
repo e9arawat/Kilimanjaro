@@ -1,4 +1,6 @@
-"""Models"""
+"""
+Models
+"""
 
 from datetime import date, timedelta
 from django.db import models
@@ -7,7 +9,9 @@ from django.core.exceptions import ObjectDoesNotExist
 
 
 class Employee(models.Model):
-    """Employee models"""
+    """
+    Employee models
+    """
 
     role_choices = [
         ("Trainee", "Trainee"),
@@ -45,7 +49,7 @@ class Employee(models.Model):
         lastnames = []
         emails = []
 
-        for i in range(1, 101):
+        for i in range(1, 10001):
             usernames.append("user" + str(i))
             firstnames.append("first" + str(i))
             lastnames.append("last" + str(i))
@@ -108,9 +112,13 @@ class Employee(models.Model):
         return attendance_dict
 
     @classmethod
-    def attendance_record(cls):
+    def attendance_record(cls, employees):
         """to return the record of all the employees"""
-        employees = cls.objects.all()
+        # ids = [x for x in range((i-1)*10,i*10+3)]
+        # print(f"page= {i}, ids={ids}")
+        # employees = cls.objects.filter(pk__in=ids)
+        # employees = cls.objects.all()
+        # print(employees[1].id)
         attendance_dict = [
             {employee.user: employee.employee_record()} for employee in employees
         ]
@@ -136,9 +144,9 @@ class Employee(models.Model):
         return min(all_dates)
 
     @classmethod
-    def date_record(cls, date_param):
+    def date_record(cls, date_param, employees):
         """to find the attendance record of all the employees on a particular date"""
-        employees = cls.objects.all()
+        # employees = cls.objects.all()
         date_data = {"date": date_param, "username_status": []}
 
         for employee in employees:
@@ -178,6 +186,15 @@ class Employee(models.Model):
 class Attendance(models.Model):
     """Attendance Model"""
 
+    status_choices = [
+        ("Present", "Present"),
+        ("Late", "Late"),
+        ("Absent", "Absent"),
+        ("Sick", "Sick"),
+        ("Vacation", "Vacation"),
+        ("Travel", "Travel"),
+    ]
+
     date = models.DateField()
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="attendance_related"
@@ -185,12 +202,7 @@ class Attendance(models.Model):
     employee = models.ForeignKey(
         Employee, on_delete=models.CASCADE, related_name="attendance_related"
     )
-    status_choices = [
-        ("Late", "Late"),
-        ("Absent", "Absent"),
-        ("Leave", "Leave"),
-        ("Official Travel", "Official Travel"),
-    ]
+
     status = models.CharField(max_length=20, choices=status_choices)
 
     def __str__(self):

@@ -4,8 +4,24 @@
 
 {% if request.user.is_staff %}
 
-    <div class="container p-5 custom-record">
-        <h2>Attendance Record</h2>
+
+    <div class="container p-5">
+        <div class="d-flex justify-content-between">
+            <div>
+                <h2>Attendance Record</h2>
+            </div>
+            <div>
+                <form method="post" action="{% url 'date-record' %}" class="d-flex">
+                    {% csrf_token %}
+                    <div class="form-group mr-2 d-flex align-items-center">
+                        <input type="date" class="form-control" name="searched_date" id="searched_date">
+                        <span>&nbsp;</span>
+                        <button class="btn btn-outline-info ml-2 btn-sm" type="submit">Search</button>
+                    </div>
+                    </form>
+            </div>
+
+        </div>
 
         <table class="table table-bordered custom-record">
             <thead>
@@ -19,9 +35,11 @@
                 </tr>
             </thead>
             <tbody>
+              
                 {% for employee in attendance_record %}
                 <tr>
                     {% for user, record in employee.items %}
+        
                         <td class="text-end" style="width: fit-content;">{{ user.id }}</td>
                         <td>{{ user.get_full_name }}</td>
                         <td class="text-end custom-view" style="width: fit-content;">{{ record.total_leaves }}</td>
@@ -47,7 +65,7 @@
         <span class="step-links">
             {% if page_obj.has_previous %}
                 <a href="?page=1">&laquo; first</a>
-                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                <a href="?page={{ page_obj.previous_page_number }}">prev</a>
             {% endif %}
 
             <span class="current">
