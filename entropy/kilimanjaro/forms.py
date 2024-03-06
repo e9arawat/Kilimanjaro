@@ -29,14 +29,15 @@ class AttendanceForm(forms.ModelForm):
     ]
 
     class Meta:
-        """ 
+        """
         Meta class
         """
+
         model = Attendance
         fields = ["date"]
 
         widgets = {
-            "date" : forms.DateInput(attrs={"class" : "form-control", "type" : "date"})
+            "date": forms.DateInput(attrs={"class": "form-control", "type": "date"})
         }
 
     def __init__(self, *args, **kwargs):

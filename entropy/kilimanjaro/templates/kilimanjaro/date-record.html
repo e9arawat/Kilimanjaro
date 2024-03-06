@@ -3,57 +3,57 @@
 {% block content %}
 
     <div class="container mt-5 border border-dark p-3 bg-light ">
-        {% if date_record.error_message %}
-            <h1>{{ date_record.error_message }}</h1>
+        {% if error_message %}
+            <h1>{{ error_message }}</h1>
         {% else %}
 
-            <button class="btn btn-info "><a class="text-dark" href="{% url 'update_attendance' selected_date=date_record.date %}">Edit</a></button>
+            <button class="btn btn-info "><a class="text-dark" href="{% url 'update_attendance' searched_date=current_date %}">Edit</a></button>
             </br>
                 <h2 class="text-secondary">Attendance Record : {{ date_record.date }}</h2>
                 
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th class="text-center">Username</th>
-                        <th class="text-center">Attendance Status</ths>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in date_record.username_status %}
-                    <tr>
-                        <td>{{item.username}}</td>
-                        {% if item.status == 'Absent' %}
-                            <td class="bg-danger">{{item.status}}</td>
-                        {% elif item.status == 'Late' %}
-                            <td class="bg-warning">{{item.status}}</td>
-                        {% elif item.status == 'N/A' %}
-                            <td class="bg-secondary">{{item.status}}</td>
-                        {% else %}
-                            <td class="bg-success">{{item.status}}</td>
-                        {% endif %}
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% endif %}
-    </div>
-    <div class="pagination mx-auto" style="width: 300px;">
-        <span class="step-links">
-            {% if page_obj.has_previous %}
-                <a href="?page=1">&laquo; first</a>
-                <a href="?page={{ page_obj.previous_page_number }}">prev</a>
-            {% endif %}
-
-            <span class="current">
-                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-            </span>
-
-            {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}">next</a>
-                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
-            {% endif %}
-        </span>
-    </div>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Username</th>
+                            <th class="text-center">Attendance Status</ths>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in date_record.username_status %}
+                        <tr>
+                            <td>{{item.username}}</td>
+                            {% if item.status == 'Absent' %}
+                                <td class="bg-danger">{{item.status}}</td>
+                            {% elif item.status == 'Late' %}
+                                <td class="bg-warning">{{item.status}}</td>
+                            {% elif item.status == 'N/A' %}
+                                <td class="bg-secondary">{{item.status}}</td>
+                            {% else %}
+                                <td class="bg-success">{{item.status}}</td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </br>
+            <div class="pagination mx-auto" style="width: 300px;">
+                <span class="step-links">
+                    {% if page_obj.has_previous %}
+                        <a href="?page=1&searched_date={{current_date}}">&laquo; first</a>
+                        <a href="?page={{ page_obj.previous_page_number }}&searched_date={{current_date}}">previous</a>
+                    {% endif %}
         
+                    <span class="current">
+                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                    </span>
+        
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}&searched_date={{current_date}}">next</a>
+                        <a href="?page={{ page_obj.paginator.num_pages }}&searched_date={{current_date}}">last &raquo;</a>
+                    {% endif %}
+                </span>
+            </div>
+            </div>
+        {% endif %}
 
 {% endblock %}

@@ -49,7 +49,7 @@ class Employee(models.Model):
         lastnames = []
         emails = []
 
-        for i in range(1, 10001):
+        for i in range(1, 101):
             usernames.append("user" + str(i))
             firstnames.append("first" + str(i))
             lastnames.append("last" + str(i))
@@ -144,9 +144,10 @@ class Employee(models.Model):
         return min(all_dates)
 
     @classmethod
-    def date_record(cls, date_param, employees):
+    def date_record(cls, date_param, users):
         """to find the attendance record of all the employees on a particular date"""
         # employees = cls.objects.all()
+        employees = [user.employee_related for user in users]
         date_data = {"date": date_param, "username_status": []}
 
         for employee in employees:
@@ -166,7 +167,7 @@ class Employee(models.Model):
         return date_data
 
     @classmethod
-    def all_dates_record(cls):
+    def all_dates_record(cls, employees):
         """return the record of all the dates"""
         current_date = cls.find_start_date()
         dates_record = []
@@ -178,7 +179,7 @@ class Employee(models.Model):
         except ObjectDoesNotExist:
             return dates_record
         while current_date <= date.today():
-            dates_record.append(obj.date_record(current_date))
+            dates_record.append(obj.date_record(current_date, employees))
             current_date += delta
         return dates_record
 

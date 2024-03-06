@@ -2,7 +2,6 @@
 
 from datetime import date
 from datetime import datetime
-from django.db.models.query import QuerySet
 from django.shortcuts import redirect
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
@@ -11,7 +10,7 @@ from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
-from django.views.generic.edit import CreateView, UpdateView, FormView
+from django.views.generic.edit import UpdateView, FormView
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
@@ -22,9 +21,6 @@ from .forms import (
     AttendanceUpdateForm,
 )
 from .models import Attendance, Employee
-
-from django.core.paginator import Paginator
-from django.contrib import messages
 
 
 # Create your views here.
@@ -95,7 +91,6 @@ class AddEmployee(FormView):
     success_url = "user-login"
 
     def form_valid(self, form):
-
         new_user = form.save()
         Employee.objects.create(
             user=new_user,
@@ -105,7 +100,6 @@ class AddEmployee(FormView):
             manager=None,
         )
         return redirect(self.success_url)
-
 
 
 class EmployeeAttendance(LoginRequiredMixin, PermissionRequiredMixin, FormView):
@@ -118,7 +112,6 @@ class EmployeeAttendance(LoginRequiredMixin, PermissionRequiredMixin, FormView):
     error_message = ""
 
     permission_required = "is_staff"
-
 
     def form_valid(self, form):
         selected_date = form.cleaned_data["date"]
@@ -144,32 +137,30 @@ class EmployeeAttendance(LoginRequiredMixin, PermissionRequiredMixin, FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['employee_data'] = User.objects.filter(is_staff=False)
+        context["employee_data"] = User.objects.filter(is_staff=False)
         context["error_message"] = getattr(self, "error_message", None)
         return context
 
 
+class AttendanceSheetView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    """renders date-wise attendance view"""
 
-# class AttendanceSheetView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
-#     """renders date-wise attendance view"""
+    template_name = "kilimanjaro/attendance_sheet.html"
+    model = Employee
+    paginate_by = 10
+    context_object_name = "employee_data"
+    login_url = "user-login"
+    permission_required = "is_staff"
 
-#     template_name = "kilimanjaro/attendance_sheet.html"
-#     model = Employee
-#     paginate_by = 6
-#     context_object_name = "attendance_data"
-#     login_url = "user-login"
-#     permission_required = "is_staff"
+    def get_queryset(self):
+        return User.objects.filter(is_staff=False)
 
-#     def get_queryset(self):
-#         return []
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         # data = self.model.all_dates_record()
-#         # context['attendance_data'] = data
-#         # employee_data = User.objects.filter(is_staff=False)
-#         # context["employee_data"] = employee_data
-#         return context
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["attendance_data"] = self.model.all_dates_record(
+            context["employee_data"]
+        )
+        return context
 
 
 class DateRecordView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
@@ -183,7 +174,7 @@ class DateRecordView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        return self.model.objects.all()
+        return User.objects.filter(is_staff=False)
 
     def post(self, request, *args, **kwargs):
         """function to search attendance record of any date"""
@@ -191,15 +182,18 @@ class DateRecordView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        searched_date = self.request.POST.get("searched_date")
+        searched_date = self.request.GET.get("searched_date")
         if not searched_date:
             return {"error_message": "No Date Selected"}
         if searched_date > str(date.today()):
             return {"error_message": "Invalid Date"}
 
         searched_date = datetime.strptime(searched_date, "%Y-%m-%d").date()
-        context["date_record"] = self.model.date_record(searched_date, context["object_list"])
+        date_record = self.model.date_record(searched_date, context["object_list"])
+        context["date_record"] = date_record
+        context["current_date"] = self.request.GET.get("searched_date")
         return context
+
 
 class UpdateAttendanceView(LoginRequiredMixin, PermissionRequiredMixin, FormView):
     """renders form for updating attendance"""
@@ -215,16 +209,16 @@ class UpdateAttendanceView(LoginRequiredMixin, PermissionRequiredMixin, FormView
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        selected_date = self.kwargs.get("selected_date")
+        selected_date = self.kwargs.get("searched_date")
         selected_date = datetime.strptime(selected_date, "%Y-%m-%d").date()
-        employees = Employee.objects.all()
+        employees = User.objects.filter(is_staff=False)
         attendance_data = Employee.date_record(selected_date, employees)
         context["date"] = attendance_data["date"]
         context["attendances"] = attendance_data["username_status"]
         return context
 
     def post(self, request, *args, **kwargs):
-        selected_date = self.kwargs.get("selected_date")
+        selected_date = self.kwargs.get("searched_date")
 
         for field_name, new_status in self.request.POST.items():
             if field_name.startswith("attendance_status_"):
@@ -241,7 +235,6 @@ class UpdateAttendanceView(LoginRequiredMixin, PermissionRequiredMixin, FormView
                     except ObjectDoesNotExist:
                         continue
                 else:
-
                     attendance_record = Attendance.objects.get_or_create(
                         date=selected_date,
                         user=user,
@@ -250,7 +243,7 @@ class UpdateAttendanceView(LoginRequiredMixin, PermissionRequiredMixin, FormView
                     attendance_record.status = new_status
                     attendance_record.save()
 
-        return redirect(reverse("dashboard"))
+        return redirect(reverse("attendance_sheet"))
 
 
 class SearchEmployee(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
