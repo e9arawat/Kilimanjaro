@@ -1,3 +1,7 @@
+"""
+API urls
+"""
+
 from django.urls import path
 from kilimanjaro.api import views
 

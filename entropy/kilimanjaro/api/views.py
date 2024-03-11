@@ -1,8 +1,14 @@
 """
 API views
 """
+
 from rest_framework.pagination import LimitOffsetPagination
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, RetrieveAPIView
+from rest_framework.generics import (
+    ListCreateAPIView,
+    RetrieveUpdateDestroyAPIView,
+    RetrieveAPIView,
+    ListAPIView,
+)
 from django.contrib.auth import get_user_model
 from ..models import Employee
 from .serializers import UserSerializer, EmployeeSerializer, AttendanceSerializer
@@ -33,6 +39,9 @@ class UserDetail(RetrieveUpdateDestroyAPIView):
     """
 
     def get_object(self):
+        """
+        return a single object
+        """
         slug = self.kwargs["slug"]
         employee = Employee.objects.get(slug=slug)
         return get_user_model().objects.get(username=employee.user)
@@ -60,7 +69,7 @@ class EmployeeDetail(RetrieveUpdateDestroyAPIView):
     serializer_class = EmployeeSerializer
 
 
-class AttendanceList(ListCreateAPIView):
+class AttendanceList(ListAPIView):
     """
     display the attendance record
     """
@@ -81,6 +90,9 @@ class AttendanceDetail(RetrieveAPIView):
     """
 
     def get_object(self):
+        """
+        return a single object
+        """
         slug = self.kwargs["slug"]
         employee = Employee.objects.get(slug=slug)
         data = employee.employee_record()

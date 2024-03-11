@@ -1,7 +1,7 @@
 """
 serializers for models
 """
-from django.urls import reverse
+
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from ..models import Employee
@@ -30,6 +30,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
         """
         Meta class
         """
+
         read_only_fields = ["slug"]
         model = Employee
         fields = ["slug", "start_date", "paid_leaves", "role", "manager"]
@@ -47,5 +48,3 @@ class AttendanceSerializer(serializers.Serializer):
     total_absents = serializers.IntegerField()
     total_lates = serializers.IntegerField()
     attendance_percentage = serializers.FloatField()
-
-    
