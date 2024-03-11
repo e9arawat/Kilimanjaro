@@ -3,6 +3,8 @@ Models
 """
 
 from datetime import date, timedelta
+import random
+import string
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
@@ -18,7 +20,7 @@ class Employee(models.Model):
         ("Employee", "Employee"),
         ("Manager", "Manager"),
     ]
-
+    slug = models.SlugField()
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, related_name="employee_related"
     )
@@ -44,12 +46,14 @@ class Employee(models.Model):
         """
         function to generate dummy-data
         """
+        slugs = set()
         usernames = []
         firstnames = []
         lastnames = []
         emails = []
 
-        for i in range(1, 101):
+        for i in range(1, 10001):
+            slugs.add(str(i).join(random.choices(string.ascii_lowercase, k=10)))
             usernames.append("user" + str(i))
             firstnames.append("first" + str(i))
             lastnames.append("last" + str(i))
@@ -75,9 +79,12 @@ class Employee(models.Model):
         paid_leaves = 24
 
         employees = []
-        for user in users:
+        print("**************************")
+        print(len(slugs))
+        print(len(users))
+        for slug, user in zip(slugs, users):
             employee = Employee(
-                user=user, start_date=start_date, paid_leaves=paid_leaves
+                slug=slug, user=user, start_date=start_date, paid_leaves=paid_leaves
             )
             employees.append(employee)
 
@@ -114,11 +121,6 @@ class Employee(models.Model):
     @classmethod
     def attendance_record(cls, employees):
         """to return the record of all the employees"""
-        # ids = [x for x in range((i-1)*10,i*10+3)]
-        # print(f"page= {i}, ids={ids}")
-        # employees = cls.objects.filter(pk__in=ids)
-        # employees = cls.objects.all()
-        # print(employees[1].id)
         attendance_dict = [
             {employee.user: employee.employee_record()} for employee in employees
         ]
@@ -205,6 +207,8 @@ class Attendance(models.Model):
     )
 
     status = models.CharField(max_length=20, choices=status_choices)
+
+    unique_together = ["employee", "date"]
 
     def __str__(self):
         """to return display name"""
